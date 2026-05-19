@@ -62,6 +62,15 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request.getRequestURI());
     }
 
+    @ExceptionHandler(PrerequisiteNotMetException.class)
+    public ResponseEntity<ApiErrorResponse> handlePrerequisiteNotMet(PrerequisiteNotMetException ex) {
+        ApiErrorResponse error = new ApiErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage()
+        );
+        return ResponseEntity.forbidden().body(error);
+    }
+
     private String formatFieldError(FieldError fieldError) {
         return fieldError.getField() + ": " + fieldError.getDefaultMessage();
     }

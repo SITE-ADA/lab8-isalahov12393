@@ -42,6 +42,7 @@ public class CourseService {
                 .title(requestDto.getTitle())
                 .code(requestDto.getCode())
                 .credits(requestDto.getCredits())
+                .prerequisiteId(requestDto.getPrerequisiteId())
                 .build();
 
         Course savedCourse = courseRepository.save(course);
@@ -66,6 +67,7 @@ public class CourseService {
         existingCourse.setTitle(requestDto.getTitle());
         existingCourse.setCode(requestDto.getCode());
         existingCourse.setCredits(requestDto.getCredits());
+        existingCourse.setPrerequisiteId(requestDto.getPrerequisiteId());
 
         Course updatedCourse = courseRepository.save(existingCourse);
         return toCourseResponseDto(updatedCourse);
@@ -118,6 +120,14 @@ public class CourseService {
         return new CourseStudentsResponseDto(course.getId(), course.getTitle(), students);
     }
 
+    if (course.getPrerequisiteId() != null) {
+        boolean completedPrerequisite = enrollmentRepository
+                .existsByStudentIdAndCourseId(studentId, course.getPrerequisiteId());
+        if (!completedPrerequisite) {
+            throw new PrerequisiteNotMetException(course.getPrerequisiteId());
+        }
+    }
+
     private void validateStudentWithFeign(Long studentId) {
         try {
             log.debug("Validating student {} via Feign", studentId);
@@ -151,7 +161,8 @@ public class CourseService {
                 course.getId(),
                 course.getTitle(),
                 course.getCode(),
-                course.getCredits()
+                course.getCredits(),
+                course.getPrerequisiteId()
         );
     }
 }
