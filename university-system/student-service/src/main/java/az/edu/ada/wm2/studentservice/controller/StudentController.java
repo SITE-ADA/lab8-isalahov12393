@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/students")
 @RequiredArgsConstructor
-@Tag(name = "Students", description = "Tələbə idarəetməsi prosesi")
+@Tag(name = "Tələbələr", description = "Tələbə idarəetmə əməliyyatları")
 public class StudentController {
 
     private final StudentService studentService;
 
     @PostMapping
-    @Operation(summary = "Create student", description = "Yeni tələbə qeydiyyata alındı.")
+    @Operation(summary = "Tələbə yarat", description = "Yeni tələbə qeydi yaradır.")
     public ResponseEntity<StudentResponseDto> createStudent(@Valid @RequestBody StudentRequestDto requestDto) {
         StudentResponseDto createdStudent = studentService.createStudent(requestDto);
         return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
