@@ -61,6 +61,23 @@ public class CourseService {
         return toCourseResponseDto(course);
     }
 
+    public List<CourseResponseDto> getCoursesByStudentName(String name) {
+        List<StudentDto> students = studentFeignClient.searchStudentsByName(name);
+        if (students.isEmpty()) {
+            throw new RemoteStudentNotFoundException(name + " adlı tələbə tapılmadı.");
+        }
+
+        Long studentId = students.get(0).getId();
+
+        return enrollmentRepository.findByStudentId(studentId)
+                .stream()
+                .map(e -> {
+                    Course c = findCourseOrThrow(e.getCourseId());
+                    return toCourseResponseDto(c);
+                })
+                .toList();
+    }
+
     public CourseResponseDto updateCourse(Long id, CourseRequestDto requestDto) {
         Course existingCourse = findCourseOrThrow(id);
 
@@ -100,7 +117,7 @@ public class CourseService {
                 savedEnrollment.getCourseId(),
                 savedEnrollment.getStudentId(),
                 savedEnrollment.getEnrollmentDate(),
-                "Student enrolled successfully."
+                "Tələbə kursa yazıldı."
         );
     }
 
@@ -135,7 +152,7 @@ public class CourseService {
         } catch (FeignException.NotFound ex) {
             throw new RemoteStudentNotFoundException(studentId);
         } catch (FeignException ex) {
-            throw new StudentServiceCommunicationException("Could not validate student-service response.");
+            throw new StudentServiceCommunicationException("Tələbə serveri ilə əlaqə kəsildi.");
         }
     }
 
@@ -147,7 +164,7 @@ public class CourseService {
         } catch (HttpClientErrorException.NotFound ex) {
             throw new RemoteStudentNotFoundException(studentId);
         } catch (RestClientException ex) {
-            throw new StudentServiceCommunicationException("Could not fetch student details from student-service.");
+            throw new StudentServiceCommunicationException("Tələbə serverindən detalları götürmək mümkün olmadı.");
         }
     }
 

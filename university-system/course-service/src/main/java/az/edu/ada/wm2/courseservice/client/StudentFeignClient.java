@@ -15,4 +15,7 @@ public interface StudentFeignClient {
 
     @GetMapping("/api/v1/students/{id}")
     StudentDto getStudentById(@PathVariable("id") Long id);
+
+    @GetMapping("/api/v1/students/search")
+    List<StudentDto> searchStudentsByName(@RequestParam("name") String name);
 }

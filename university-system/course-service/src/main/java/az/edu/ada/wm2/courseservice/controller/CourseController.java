@@ -42,6 +42,14 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getAllCourses());
     }
 
+    @GetMapping("/by-student-name")
+    @Operation(summary = "Tələbə adına görə kursları əldə et",
+            description = "Tələbənin adı və ya soyadına görə onun qeydiyyatlı olduğu kursları qaytarır.")
+    public ResponseEntity<List<CourseResponseDto>> getCoursesByStudentName(
+            @RequestParam String name) {
+        return ResponseEntity.ok(courseService.getCoursesByStudentName(name));
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get course by id", description = "Returns a single course by id.")
     public ResponseEntity<CourseResponseDto> getCourseById(@PathVariable Long id) {

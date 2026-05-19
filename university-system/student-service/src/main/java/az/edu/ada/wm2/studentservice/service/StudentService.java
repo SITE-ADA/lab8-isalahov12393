@@ -34,6 +34,14 @@ public class StudentService {
                 .toList();
     }
 
+    public List<StudentResponseDto> searchByName(String name) {
+        return studentRepository
+                .findByFirstNameOrLastName(name, name)
+                .stream()
+                .map(this::toResponseDto)
+                .toList();
+    }
+
     public StudentResponseDto getStudentById(Long id) {
         Student student = findStudentOrThrow(id);
         return toResponseDto(student);
