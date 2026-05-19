@@ -76,7 +76,7 @@ public class CourseService {
         courseRepository.delete(course);
     }
 
-    public EnrollmentResponseDto enrollStudent(Long courseId, Long studentId) {
+    public EnrollmentResponseDto enrollStudent(Long courseId, Long studentId, LocalDate enrollmentDate) {
         log.debug("Enrolling student {} into course {}", studentId, courseId);
         findCourseOrThrow(courseId);
 
@@ -89,6 +89,7 @@ public class CourseService {
         Enrollment enrollment = Enrollment.builder()
                 .courseId(courseId)
                 .studentId(studentId)
+                .enrollmentDate(enrollmentDate)
                 .build();
         Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
 
@@ -96,6 +97,7 @@ public class CourseService {
                 savedEnrollment.getId(),
                 savedEnrollment.getCourseId(),
                 savedEnrollment.getStudentId(),
+                savedEnrollment.getEnrollmentDate(),
                 "Student enrolled successfully."
         );
     }

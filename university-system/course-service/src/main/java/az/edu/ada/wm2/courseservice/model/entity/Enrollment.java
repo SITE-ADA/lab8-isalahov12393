@@ -35,4 +35,11 @@ public class Enrollment {
     @Column(name = "student_id", nullable = false)
     private Long studentId;
 
+    @Column(name = "enrollment_date", nullable = false)
+    private LocalDate enrollmentDate;
+
+    @PrePersist
+    public void setEnrollmentDate(){
+        this.enrollmentDate = LocalDate.now();
+    }
 }
